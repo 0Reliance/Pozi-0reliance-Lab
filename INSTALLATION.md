@@ -22,7 +22,7 @@ The Homelab Documentation Hub is a comprehensive platform for managing homelab d
 
 ## Installation Methods
 
-### Method 1: Docker Compose (Recommended)
+### Method 1: Automated Setup (Recommended)
 
 #### Prerequisites
 1. Install Docker and Docker Compose
@@ -33,7 +33,73 @@ The Homelab Documentation Hub is a comprehensive platform for managing homelab d
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-org/homelab-docs.git
+git clone https://github.com/genpozi/homelab-docs.git
+cd homelab-docs
+
+# 2. Run automated setup script
+chmod +x scripts/setup.sh
+./scripts/setup.sh
+
+# The setup script will:
+# - Validate system requirements
+# - Check and validate environment variables
+# - Set up directory structure
+# - Generate SSL certificates (self-signed for development)
+# - Build Docker images
+# - Deploy all services
+# - Configure automated backups
+# - Perform health checks
+```
+
+#### What the Setup Script Does
+
+The automated setup script (`scripts/setup.sh`) performs comprehensive deployment:
+
+1. **System Requirements Check**
+   - Verifies Docker and Docker Compose installation
+   - Checks available memory (minimum 2GB recommended)
+   - Validates disk space (minimum 5GB required)
+   - Warns about potential performance limitations
+
+2. **Environment Validation**
+   - Creates `.env` from `.env.example` if needed
+   - Validates required environment variables (OPENAI_API_KEY, SECRET_KEY)
+   - Checks OpenAI API key format
+   - Verifies secret key length and complexity
+
+3. **Directory Structure Setup**
+   - Creates necessary directories: `logs/`, `backups/`, `uploads/`, `data/`, `ssl/`
+   - Sets appropriate permissions for security
+
+4. **SSL Certificate Generation**
+   - Generates self-signed certificates for development
+   - Warns about using proper certificates for production
+
+5. **Docker Image Building**
+   - Builds MkDocs and AI backend images
+   - Handles build errors gracefully
+
+6. **Service Deployment**
+   - Starts all services using Docker Compose
+   - Performs health checks on each service
+   - Waits for services to be ready
+
+7. **Backup Automation**
+   - Configures automated daily backups via cron
+   - Sets up backup retention policies
+
+### Method 2: Manual Docker Compose
+
+#### Prerequisites
+1. Install Docker and Docker Compose
+2. Install Git
+3. Ensure ports 80, 8000, 8001 are available
+
+#### Installation Steps
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/genpozi/homelab-docs.git
 cd homelab-docs
 
 # 2. Copy environment configuration
@@ -458,45 +524,268 @@ DATABASE_POOL_MAX_OVERFLOW=30
 
 ## Backup and Recovery
 
-### Data Backup
+### Automated Backup System
+
+The Homelab Documentation Hub includes a comprehensive automated backup system that handles:
+
+- **Docker Volumes**: All application data and uploads
+- **Configuration Files**: Environment variables, Docker configs, scripts
+- **Documentation**: All markdown files and content
+- **SSL Certificates**: Security certificates for HTTPS
+- **Metadata**: Backup manifests and integrity reports
+
+#### Backup Script Features
+
+The included `scripts/backup.sh` script provides:
 
 ```bash
-# Backup configuration files
-tar -czf homelab-backup-$(date +%Y%m%d).tar.gz .env docker/ admin/
+# Daily backup (default retention: 30 days)
+./scripts/backup.sh daily
 
-# Backup Docker volumes
-docker run --rm -v docker_ai_uploads:/data -v $(pwd):/backup alpine tar czf /backup/uploads-$(date +%Y%m%d).tar.gz -C /data .
+# Weekly backup (default retention: 90 days)
+./scripts/backup.sh weekly
 
-# Automated backup script
-#!/bin/bash
-BACKUP_DIR="/backup/homelab-docs"
-DATE=$(date +%Y%m%d_%H%M%S)
+# Monthly backup (default retention: 365 days)
+./scripts/backup.sh monthly
 
-mkdir -p $BACKUP_DIR
+# List available backups
+./scripts/backup.sh list [daily|weekly|monthly]
 
-# Backup configs
-cp .env $BACKUP_DIR/config.env.$DATE
-cp -r docker/ $BACKUP_DIR/docker.$DATE
+# Restore from backup
+./scripts/backup.sh restore 20240101_120000 [daily|weekly|monthly]
 
-# Backup data
-docker run --rm -v docker_ai_uploads:/data -v $BACKUP_DIR:/backup alpine tar czf /backup/uploads.$DATE.tar.gz -C /data .
-
-# Cleanup old backups (keep 7 days)
-find $BACKUP_DIR -name "*.tar.gz" -mtime +7 -delete
-find $BACKUP_DIR -name "docker.*" -mtime +7 -exec rm -rf {} \;
+# Show help
+./scripts/backup.sh help
 ```
 
-### Recovery Procedures
+#### Backup Contents
+
+Each backup includes:
+- `config.tar.gz` - Configuration files (.env, docker/, scripts/)
+- `docs.tar.gz` - Documentation content
+- `uploads.tar.gz` - User uploads and files
+- `ssl.tar.gz` - SSL certificates
+- `volume_*.tar.gz` - Docker volumes (ai_uploads, redis_data, etc.)
+- `manifest.json` - Backup metadata and system info
+- `backup_report.txt` - Detailed backup report
+- `file_list.txt` - Complete file inventory
+
+#### Backup Automation Setup
+
+The setup script automatically configures backup automation:
 
 ```bash
-# Restore from backup
-tar -xzf homelab-backup-20231201.tar.gz
+# Manual setup (if not using automated setup)
+# Add to crontab for daily backups at 2 AM
+crontab -e
 
-# Restore Docker volumes
-docker run --rm -v docker_ai_uploads:/data -v $(pwd)/backup:/backup alpine tar xzf /backup/uploads-20231201.tar.gz -C /data
+# Add this line:
+0 2 * * * cd /path/to/homelab-docs && ./scripts/backup.sh daily >> logs/backup.log 2>&1
 
-# Restart services
-docker-compose -f docker/docker-compose.yml restart
+# Weekly backup (Sundays at 3 AM)
+0 3 * * 0 cd /path/to/homelab-docs && ./scripts/backup.sh weekly >> logs/backup.log 2>&1
+
+# Monthly backup (1st of month at 4 AM)
+0 4 1 * * cd /path/to/homelab-docs && ./scripts/backup.sh monthly >> logs/backup.log 2>&1
+```
+
+#### Backup Verification and Integrity
+
+All backups include automatic verification:
+
+```bash
+# Manual backup verification
+./scripts/backup.sh verify /path/to/backup
+
+# Check backup integrity
+tar -tzf backups/daily/20240101_120000/config.tar.gz >/dev/null 2>&1
+echo $?
+
+# View backup report
+cat backups/daily/20240101_120000/backup_report.txt
+
+# Check backup manifest
+cat backups/daily/20240101_120000/manifest.json
+```
+
+#### Recovery Procedures
+
+##### Full System Recovery
+
+```bash
+# List available backups to restore from
+./scripts/backup.sh list daily
+
+# Restore from specific backup (interactive)
+./scripts/backup.sh restore 20240101_120000 daily
+
+# The restore process will:
+# 1. Verify backup integrity
+# 2. Stop all services
+# 3. Restore configuration files
+# 4. Restore documentation
+# 5. Restore uploads
+# 6. Restore Docker volumes
+# 7. Restart services
+# 8. Verify system health
+```
+
+##### Manual Recovery Steps
+
+```bash
+# 1. Stop services
+cd docker
+docker-compose down
+
+# 2. Restore configuration
+tar -xzf backups/daily/20240101_120000/config.tar.gz -C ../
+
+# 3. Restore documentation
+tar -xzf backups/daily/20240101_120000/docs.tar.gz -C ../
+
+# 4. Restore uploads
+tar -xzf backups/daily/20240101_120000/uploads.tar.gz -C ../
+
+# 5. Restore Docker volumes
+docker run --rm -v homelab-docs_ai_uploads:/data \
+    -v $(pwd)/../backups/daily/20240101_120000:/backup:ro \
+    alpine tar xzf /backup/volume_homelab-docs_ai_uploads.tar.gz -C /data
+
+docker run --rm -v homelab-docs_redis_data:/data \
+    -v $(pwd)/../backups/daily/20240101_120000:/backup:ro \
+    alpine tar xzf /backup/volume_homelab-docs_redis_data.tar.gz -C /data
+
+# 6. Restart services
+docker-compose up -d
+
+# 7. Verify recovery
+curl http://localhost:8001/health
+```
+
+#### Backup Configuration
+
+Customize backup behavior with environment variables:
+
+```bash
+# Backup location
+BACKUP_DIR=/custom/backup/path
+
+# Retention periods
+DAILY_RETENTION=30      # days
+WEEKLY_RETENTION=90     # days
+MONTHLY_RETENTION=365   # days
+
+# Compression settings
+COMPRESSION_LEVEL=6       # 1-9, 6 is default
+
+# Logging
+BACKUP_LOG_FILE=/var/log/homelab-backup.log
+```
+
+#### Offsite Backup Integration
+
+Configure offsite backups with cloud storage:
+
+```bash
+# Add to backup script for cloud sync
+# Example: AWS S3
+aws s3 sync backups/ s3://your-backup-bucket/homelab-docs/
+
+# Example: Google Cloud Storage
+gsutil -m rsync -r backups/ gs://your-backup-bucket/homelab-docs/
+
+# Example: rsync to remote server
+rsync -avz --delete backups/ user@backup-server:/backups/homelab-docs/
+```
+
+#### Disaster Recovery Planning
+
+##### Emergency Response Checklist
+
+1. **Assess Situation**
+   ```bash
+   # Check service status
+   docker-compose ps
+   
+   # Check system health
+   ./scripts/backup.sh health-check
+   
+   # Identify affected services
+   curl http://localhost:8001/health
+   ```
+
+2. **Initiate Recovery**
+   ```bash
+   # Stop all services
+   docker-compose down
+   
+   # Choose appropriate backup
+   ./scripts/backup.sh list daily
+   ```
+
+3. **Execute Recovery**
+   ```bash
+   # Perform full restore
+   ./scripts/backup.sh restore [backup_timestamp] daily
+   
+   # Verify services
+   docker-compose ps
+   curl http://localhost:8001/health
+   ```
+
+4. **Post-Recovery Validation**
+   ```bash
+   # Test documentation access
+   curl http://localhost
+   
+   # Test AI functionality
+   curl http://localhost:8001/api/generate -X POST
+   
+   # Check data integrity
+   ./scripts/backup.sh verify-current
+   ```
+
+#### Backup Monitoring and Alerts
+
+Monitor backup operations:
+
+```bash
+# Check backup logs
+tail -f logs/backup.log
+
+# Monitor backup directory size
+du -sh backups/
+
+# Check last backup status
+./scripts/backup.sh status
+
+# Email notification setup (example)
+echo "Backup completed: $(date)" | mail -s "Homelab Docs Backup" admin@example.com
+```
+
+#### Performance Considerations
+
+- **Backup Schedule**: During low-traffic hours (2-4 AM)
+- **Storage Requirements**: ~2-5GB per full backup
+- **Network Bandwidth**: Consider for offsite backups
+- **Compression**: Level 6 balances speed and size
+- **Retention**: Adjust based on storage capacity and compliance
+
+#### Security Best Practices
+
+- **Encryption**: Backup storage should be encrypted
+- **Access Control**: Restrict backup file permissions
+- **Offsite Storage**: Store backups in separate location
+- **Testing**: Regularly test restore procedures
+- **Audit**: Log all backup and restore operations
+
+```bash
+# Secure backup permissions
+chmod 700 backups/
+chmod 600 backups/*/*
+
+# Backup encryption example
+gpg --symmetric --cipher-algo AES256 backups/daily/20240101_120000.tar.gz
 ```
 
 ## Monitoring and Maintenance
@@ -661,4 +950,3 @@ A: Yes, the AI backend can be configured to work with OpenAI-compatible APIs.
 A: See the "Backup and Recovery" section for automated backup procedures.
 
 ---
-
