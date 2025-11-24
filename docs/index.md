@@ -3,8 +3,11 @@ title: Homelab Documentation Hub
 description: Your comprehensive resource for homelab projects and technical documentation
 ---
 
-<!-- Hero Section with Parallax -->
+<!-- Hero Section with Multi-Layer Parallax -->
 <div class="hero-parallax">
+  <div class="parallax-layer parallax-back"></div>
+  <div class="parallax-layer parallax-mid"></div>
+  <div class="parallax-layer parallax-front"></div>
   <div class="hero-content">
     <h1 class="hero-title">Homelab Documentation Hub</h1>
     <p class="hero-subtitle">Empowering your technical journey with AI-powered documentation</p>
@@ -13,7 +16,6 @@ description: Your comprehensive resource for homelab projects and technical docu
       <a href="/admin" class="md-button md-button--secondary">Admin Portal</a>
     </div>
   </div>
-  <div class="parallax-layer"></div>
 </div>
 
 <!-- Quick Stats Section -->

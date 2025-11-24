@@ -1,0 +1,541 @@
+/* Homelab Documentation Custom Styles */
+
+/* Hero Section Styles */
+.hero-parallax {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 2rem;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Stats Section */
+.stats-section {
+    padding: 4rem 0;
+    background: var(--md-primary-fg-color);
+    color: var(--md-primary-bg-color);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--md-accent-fg-color);
+}
+
+.stat-label {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Featured Projects Section */
+.featured-section {
+    padding: 4rem 0;
+    background: var(--md-default-bg-color);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--md-default-fg-color);
+}
+
+.section-header p {
+    font-size: 1.2rem;
+    color: var(--md-default-fg-color--light);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.project-card {
+    background: var(--md-code-bg-color);
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.project-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.project-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--md-default-fg-color);
+}
+
+.project-card p {
+    color: var(--md-default-fg-color--light);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--md-accent-fg-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: gap 0.3s ease;
+}
+
+.project-link:hover {
+    gap: 1rem;
+}
+
+/* Coursework Section */
+.coursework-section {
+    padding: 4rem 0;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.coursework-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.coursework-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.coursework-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.coursework-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.coursework-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.coursework-card p {
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.coursework-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--md-accent-fg-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: gap 0.3s ease;
+}
+
+.coursework-link:hover {
+    gap: 1rem;
+}
+
+/* AI Assistant Section */
+.ai-section {
+    padding: 4rem 0;
+    background: var(--md-code-bg-color);
+}
+
+.ai-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.ai-text h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--md-default-fg-color);
+}
+
+.ai-text p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--md-default-fg-color--light);
+    margin-bottom: 2rem;
+}
+
+.ai-features {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.ai-feature {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--md-default-bg-color);
+    border-radius: 10px;
+    border-left: 4px solid var(--md-accent-fg-color);
+}
+
+.ai-feature-icon {
+    font-size: 1.5rem;
+    color: var(--md-accent-fg-color);
+}
+
+/* AI Chat Preview */
+.ai-visual {
+    position: relative;
+}
+
+.ai-chat-preview {
+    background: var(--md-default-bg-color);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.chat-message {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 10px;
+    max-width: 80%;
+}
+
+.ai-message {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-right: auto;
+}
+
+.user-message {
+    background: var(--md-code-bg-color);
+    color: var(--md-default-fg-color);
+    margin-left: auto;
+    border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.chat-message.typing::after {
+    content: '...';
+    animation: typing 1.5s infinite;
+}
+
+@keyframes typing {
+    0%, 60%, 100% { opacity: 1; }
+    30% { opacity: 0.3; }
+}
+
+/* Quick Links Section */
+.quick-links {
+    padding: 4rem 0;
+    background: var(--md-primary-fg-color);
+    color: var(--md-primary-bg-color);
+}
+
+.quick-links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.quick-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    text-decoration: none;
+    color: white;
+    transition: background 0.3s ease, transform 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.quick-link:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+    color: white;
+}
+
+.quick-link-icon {
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+}
+
+.quick-link-text {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .ai-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    
+    .project-grid,
+    .coursework-grid,
+    .quick-links-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .section-header h2 {
+        font-size: 2rem;
+    }
+}
+
+/* Dark Mode Adjustments */
+[data-md-color-scheme="slate"] {
+    .coursework-section {
+        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    }
+    
+    .coursework-card {
+        background: var(--md-code-bg-color);
+        color: var(--md-default-fg-color);
+    }
+    
+    .coursework-card h3 {
+        color: var(--md-default-fg-color);
+    }
+    
+    .coursework-card p {
+        color: var(--md-default-fg-color--light);
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.8s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in-left {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+@keyframes slideInLeft {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+.slide-in-right {
+    animation: slideInRight 0.6s ease-out;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+/* Scroll Progress Bar */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: var(--md-accent-fg-color);
+    z-index: 1000;
+    transition: width 0.2s ease;
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    background: var(--md-accent-fg-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 100;
+}
+
+.back-to-top:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.back-to-top.visible {
+    display: flex;
+}
+
+/* Code Block Enhancements */
+.highlight .filename {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.25rem 0.5rem;
+    background: var(--md-accent-fg-color);
+    color: white;
+    font-size: 0.8rem;
+    border-radius: 0 0 0 0.25rem;
+    font-weight: 600;
+}
+
+/* Table of Contents Enhancements */
+.md-nav--secondary .md-nav__link--active {
+    color: var(--md-accent-fg-color);
+    font-weight: 600;
+}
+
+/* Admonition Customization */
+.admonition.tip {
+    border-left: 4px solid var(--md-accent-fg-color);
+}
+
+.admonition.tip .admonition-title {
+    color: var(--md-accent-fg-color);
+}
+
+/* Search Results Enhancement */
+.md-search-result__teaser {
+    color: var(--md-default-fg-color--light);
+    line-height: 1.6;
+}
+
+.md-search-result__title {
+    color: var(--md-accent-fg-color);
+    font-weight: 600;
+}
+
+/* Print Styles */
+@media print {
+    .hero-parallax,
+    .ai-section,
+    .quick-links {
+        display: none;
+    }
+    
+    .featured-section,
+    .coursework-section {
+        page-break-inside: avoid;
+    }
+}
