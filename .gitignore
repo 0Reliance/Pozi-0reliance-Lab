@@ -1,0 +1,10 @@
+# .gitignore for homelab-docs
+venv/
+.env
+*.pem
+*.key
+htpasswd
+__pycache__/
+*.pyc
+site/
+# Add more patterns as needed for secrets and build artifacts
