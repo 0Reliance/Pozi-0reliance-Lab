@@ -1,4 +1,4 @@
-/* Parallax Hero Section */
+/* Enhanced Parallax Hero Section */
 .hero-parallax {
   position: relative;
   height: 100vh;
@@ -9,6 +9,7 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+/* Multiple parallax layers for depth */
 .parallax-layer {
   position: absolute;
   top: 0;
@@ -19,57 +20,104 @@
   background-position: center;
   background-repeat: no-repeat;
   will-change: transform;
+  transition: transform 0.1s ease-out;
 }
 
-.parallax-back {
-  background-image: url('../images/parallax/mario.gif'), linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
-  background-size: cover, contain;
-  background-position: center, center;
+/* Cloud layer - dream.png */
+.parallax-cloud {
+  background-image: url('../images/dream.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.8;
   z-index: 1;
+  filter: blur(2px);
+  animation: drift 20s infinite ease-in-out;
 }
 
-.parallax-mid {
-  background-image: url('../images/parallax/midground.svg');
-  opacity: 0.6;
+/* Tech pattern layer */
+.parallax-tech {
+  background-image: url('../images/tech-pattern.svg');
+  opacity: 0.3;
   z-index: 2;
+  animation: move 30s infinite linear;
 }
 
-.parallax-front {
-  background-image: url('../images/parallax/tech-pattern.svg');
-  opacity: 0.4;
+/* Hero image layer */
+.parallax-hero {
+  background-image: url('../images/lhnvupvps4h91.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   z-index: 3;
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
 }
 
+.parallax-hero.active {
+  opacity: 1;
+}
+
+/* Hero content container */
 .hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 4;
   text-align: center;
   color: white;
   max-width: 800px;
   padding: 2rem;
+  animation: fadeInUp 1s ease-out;
 }
 
+/* Hero text with enhanced visibility */
 .hero-title {
   font-size: 4rem;
   font-weight: 700;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
   animation: fadeInUp 1s ease-out;
+  background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: white;
+  padding: 0.5rem 1rem;
 }
 
 .hero-subtitle {
   font-size: 1.5rem;
   margin-bottom: 2rem;
-  opacity: 0.9;
+  opacity: 0;
   animation: fadeInUp 1s ease-out 0.2s both;
+  transform: translateY(10px);
 }
 
+/* Enhanced hero buttons */
 .hero-buttons {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: 3rem;
   animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.hero-button {
+  padding: 1rem 2rem;
+  background: rgba(255,255,255,0.2);
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--md-accent-fg-color);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.hero-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  background: rgba(255,255,255,0.3);
+  border-color: var(--md-accent-fg-color);
 }
 
 /* Stats Section */
@@ -96,11 +144,13 @@
   font-weight: 700;
   margin-bottom: 0.5rem;
   color: var(--md-accent-fg-color);
+  animation: countUp 2s ease-out;
 }
 
 .stat-label {
   font-size: 1.1rem;
-  opacity: 0.9;
+  opacity: 0;
+  animation: fadeInUp 1s ease-out 0.3s both;
 }
 
 /* Featured Section */
@@ -313,6 +363,7 @@
 
 .quick-link-icon {
   font-size: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .quick-link-text {
@@ -335,6 +386,32 @@
 @keyframes typing {
   0%, 60%, 100% { opacity: 1; }
   30% { opacity: 0.5; }
+}
+
+@keyframes countUp {
+  from { content: "0"; }
+  to { content: var(--stats-counter, "0"); }
+}
+
+@keyframes drift {
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+  }
+  50% {
+    transform: translateX(20px) translateY(-10px);
+  }
+  100% {
+    transform: translateX(-20px) translateY(0);
+  }
+}
+
+@keyframes move {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 /* Responsive Design */
@@ -392,6 +469,12 @@
   .hero-parallax {
     background-attachment: scroll;
   }
+  
+  @keyframes fadeInUp {
+    from, to {
+      opacity: 1;
+    }
+  }
 }
 
 /* Touch devices */
@@ -421,6 +504,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Performance optimizations */
+.parallax-layer {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
 /* Custom scrollbar for better aesthetics */
 ::-webkit-scrollbar {
   width: 8px;
@@ -438,3 +527,19 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--md-accent-fg-color--dark);
 }
+
+/* CSS Variables for performance */
+:root {
+  --parallax-speed: 0.5;
+  --parallax-cloud-speed: 0.2;
+  --parallax-tech-speed: 0.1;
+  --parallax-hero-duration: 1.2s;
+  --stats-counter: "0";
+}
+
+/* Intersection Observer API support */
+@supports (animation-timeline: replace(--fadeIn)) {
+  .hero-parallax {
+    animation: none;
+  }
+  
