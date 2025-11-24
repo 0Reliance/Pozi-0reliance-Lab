@@ -1,0 +1,210 @@
+site_name: Homelab Documentation Hub
+site_description: Comprehensive documentation for homelab projects and coursework materials
+site_author: AI-Powered Content Management
+site_url: https://homelab-docs.local
+
+# Repository
+repo_name: homelab-docs
+repo_url: https://github.com/yourusername/homelab-docs
+edit_uri: edit/main/docs/
+
+# Theme Configuration
+theme:
+  name: material
+  language: en
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - search.share
+    - search.suggest
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
+    - header.autohide
+    - announce.dismiss
+  icon:
+    logo: material/library
+    repo: fontawesome/brands/git-alt
+
+# Plugins
+plugins:
+  - search:
+      lang: en
+      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
+  - awesome-pages
+  - git-revision-date-localized:
+      type: datetime
+      timezone: UTC
+      locale: en
+      enable_creation_date: true
+  - git-committers:
+      repository: yourusername/homelab-docs
+      branch: main
+  - macros
+  - mermaid2:
+      version: 10.6.1
+  - minify:
+      minify_html: true
+      minify_js: true
+      minify_css: true
+      htmlmin_opts:
+        remove_comments: true
+        remove_empty_space: true
+        remove_all_empty_space: false
+        reduce_boolean_attributes: true
+
+# Extensions
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+      title: Table of Contents
+  - tables
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      normalize_issue_symbols: true
+      repo_url_shorthand: true
+      user: yourusername
+      repo: homelab-docs
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Page Tree
+nav:
+  - Home: index.md
+  - Homelab Projects:
+    - homelab/index.md
+    - Network Infrastructure:
+      - homelab/network/index.md
+      - Router Configuration: homelab/network/router.md
+      - Switch Setup: homelab/network/switches.md
+      - Firewall Rules: homelab/network/firewall.md
+    - Storage Systems:
+      - homelab/storage/index.md
+      - NAS Configuration: homelab/storage/nas.md
+      - Backup Strategies: homelab/storage/backup.md
+      - Data Recovery: homelab/storage/recovery.md
+    - Virtualization:
+      - homelab/virtualization/index.md
+      - Proxmox Setup: homelab/virtualization/proxmox.md
+      - Docker Containers: homelab/virtualization/docker.md
+      - Kubernetes Cluster: homelab/virtualization/kubernetes.md
+    - Monitoring:
+      - homelab/monitoring/index.md
+      - Grafana Dashboards: homelab/monitoring/grafana.md
+      - Prometheus Setup: homelab/monitoring/prometheus.md
+      - Alert Management: homelab/monitoring/alerts.md
+  - Coursework:
+    - coursework/index.md
+    - Computer Science:
+      - coursework/cs/index.md
+      - Data Structures: coursework/cs/data-structures.md
+      - Algorithms: coursework/cs/algorithms.md
+      - Database Systems: coursework/cs/databases.md
+    - Network Engineering:
+      - coursework/networking/index.md
+      - TCP/IP Fundamentals: coursework/networking/tcpip.md
+      - Network Security: coursework/networking/security.md
+      - Wireless Networks: coursework/networking/wireless.md
+    - System Administration:
+      - coursework/sysadmin/index.md
+      - Linux Administration: coursework/sysadmin/linux.md
+      - Windows Server: coursework/sysadmin/windows.md
+      - Scripting Automation: coursework/sysadmin/scripting.md
+  - Guides:
+    - guides/index.md
+    - Getting Started: guides/getting-started.md
+    - Best Practices: guides/best-practices.md
+    - Troubleshooting: guides/troubleshooting.md
+    - Security: guides/security.md
+  - API Reference: api.md
+  - About:
+    - about/index.md
+    - Contributing: about/contributing.md
+    - Changelog: about/changelog.md
+
+# Extra CSS and JavaScript
+extra_css:
+  - stylesheets/extra.css
+  - stylesheets/parallax.css
+  - stylesheets/ai-assistant.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - javascripts/extra.js
+  - javascripts/parallax.js
+  - javascripts/ai-assistant.js
+
+# Extra Variables
+extra:
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/yourusername
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/yourprofile
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/yourusername
+  version:
+    provider: mike
+    default: stable
+  generator: false
+
+# Copyright
+copyright: Copyright &copy; 2024 Homelab Documentation Hub - AI Powered

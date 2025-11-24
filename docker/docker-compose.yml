@@ -1,0 +1,127 @@
+version: '3.8'
+
+services:
+  # MkDocs Documentation Site
+  mkdocs:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.mkdocs
+    container_name: homelab-docs-mkdocs
+    ports:
+      - "8000:8000"
+    volumes:
+      - ..:/app
+      - mkdocs_site:/app/site
+    working_dir: /app
+    command: >
+      sh -c "
+        cd /app &&
+        source venv/bin/activate &&
+        mkdocs serve --dev-addr=0.0.0.0:8000 --watch
+      "
+    environment:
+      - PYTHONPATH=/app
+    restart: unless-stopped
+    networks:
+      - homelab-docs-network
+
+  # AI Backend API
+  ai-backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.ai-backend
+    container_name: homelab-docs-ai-backend
+    ports:
+      - "8001:8000"
+    volumes:
+      - ..:/app
+      - ai_uploads:/app/uploads
+    working_dir: /app
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-in-production}
+      - DOCS_PATH=/app/docs
+      - ADMIN_PATH=/app/admin
+      - MKDOCS_CONFIG=/app/mkdocs.yml
+    restart: unless-stopped
+    depends_on:
+      - mkdocs
+    networks:
+      - homelab-docs-network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: homelab-docs-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./htpasswd:/etc/nginx/.htpasswd:ro
+      - mkdocs_site:/usr/share/nginx/html/docs:ro
+      - ../admin:/usr/share/nginx/html/admin:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    restart: unless-stopped
+    depends_on:
+      - mkdocs
+      - ai-backend
+    networks:
+      - homelab-docs-network
+
+  # Redis for session storage (optional)
+  redis:
+    image: redis:alpine
+    container_name: homelab-docs-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - homelab-docs-network
+
+  # Git Repository (optional, for external repo sync)
+  git-sync:
+    image: alpine/git
+    container_name: homelab-docs-git-sync
+    volumes:
+      - ..:/repo
+    environment:
+      - GIT_REPO_URL=${GIT_REPO_URL}
+      - GIT_BRANCH=${GIT_BRANCH:-main}
+    command: >
+      sh -c "
+        if [ ! -d /repo/.git ]; then
+          git clone $$GIT_REPO_URL /repo
+        else
+          cd /repo &&
+          git fetch origin &&
+          git checkout $$GIT_BRANCH &&
+          git pull origin $$GIT_BRANCH
+        fi &&
+        while true; do
+          sleep 300 &&
+          cd /repo &&
+          git add . &&
+          git commit -m 'Auto-sync from container' || true &&
+          git push origin $$GIT_BRANCH || true
+        done
+      "
+    restart: unless-stopped
+    networks:
+      - homelab-docs-network
+    profiles:
+      - git-sync
+
+volumes:
+  mkdocs_site:
+    driver: local
+  ai_uploads:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  homelab-docs-network:
+    driver: bridge
