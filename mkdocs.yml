@@ -5,7 +5,7 @@ site_url: https://homelab-docs.local
 
 # Repository
 repo_name: homelab-docs
-repo_url: https://github.com/yourusername/homelab-docs
+repo_url: https://github.com/genpozi/homelab-docs
 edit_uri: edit/main/docs/
 
 # Theme Configuration
