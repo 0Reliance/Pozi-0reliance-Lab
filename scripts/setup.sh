@@ -174,20 +174,24 @@ setup_directories() {
 generate_ssl_certificates() {
     log_info "Setting up SSL certificates..."
     
-    local ssl_dir="ssl"
-    local cert_file="$ssl_dir/cert.pem"
-    local key_file="$ssl_dir/key.pem"
+    local ssl_dir="docker/ssl"
+    local cert_file="$ssl_dir/fullchain.pem"
+    local key_file="$ssl_dir/privkey.pem"
     
     if [[ -f "$cert_file" && -f "$key_file" ]]; then
         log_info "SSL certificates already exist"
         return
     fi
     
-    # Generate self-signed certificate
+    # Create SSL directory if it doesn't exist
+    mkdir -p "$ssl_dir"
+    
+    # Generate self-signed certificate with correct names
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
         -keyout "$key_file" \
         -out "$cert_file" \
         -subj "/C=US/ST=State/L=City/O=Homelab/CN=localhost" \
+        -addext "subjectAltName=DNS:localhost,DNS:homelab-docs.local,IP:127.0.0.1" \
         2>/dev/null
     
     log_success "SSL certificates generated"
