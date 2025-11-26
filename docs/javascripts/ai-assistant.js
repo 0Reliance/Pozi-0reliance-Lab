@@ -1,11 +1,99 @@
 // AI Assistant functionality for Homelab Docs
 document.addEventListener('DOMContentLoaded', function() {
-    // Create AI Assistant UI
-    createAIAssistant();
-    
-    // Load conversation history
-    loadConversationHistory();
+    // Check authentication before creating AI Assistant
+    if (checkAuthentication()) {
+        createAIAssistant();
+        loadConversationHistory();
+    } else {
+        showAuthenticationRequired();
+    }
 });
+
+// Rate limiting configuration
+const RATE_LIMIT = 10; // requests per minute
+const rateLimiter = new Map();
+
+function checkAuthentication() {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        return false;
+    }
+    
+    // Basic token validation (JWT format check)
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const now = Date.now() / 1000;
+        return payload.exp > now;
+    } catch (e) {
+        return false;
+    }
+}
+
+function redirectToLogin() {
+    window.location.href = '/admin/login';
+}
+
+function showAuthenticationRequired() {
+    const authMessage = document.createElement('div');
+    authMessage.className = 'ai-auth-required';
+    authMessage.innerHTML = `
+        <div style="position: fixed; bottom: 20px; right: 20px; background: #dc3545; color: white; padding: 15px; border-radius: 8px; max-width: 300px; z-index: 1000;">
+            <strong>🔒 Authentication Required</strong><br>
+            Please <a href="/admin/login" style="color: white; text-decoration: underline;">login</a> to use the AI Assistant.
+            <button onclick="this.parentElement.parentElement.remove()" style="margin-left: 10px; background: none; border: 1px solid white; color: white; padding: 2px 8px; cursor: pointer;">✕</button>
+        </div>
+    `;
+    document.body.appendChild(authMessage);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (authMessage.parentElement) {
+            authMessage.remove();
+        }
+    }, 5000);
+}
+
+function checkRateLimit(userId) {
+    const now = Date.now();
+    const userRequests = rateLimiter.get(userId) || [];
+    const recentRequests = userRequests.filter(time => now - time < 60000);
+    
+    if (recentRequests.length >= RATE_LIMIT) {
+        throw new Error('Rate limit exceeded. Please wait before sending another message.');
+    }
+    
+    recentRequests.push(now);
+    rateLimiter.set(userId, recentRequests);
+}
+
+function validateAIInput(message) {
+    // Length validation
+    if (message.length > 1000) {
+        throw new Error('Message too long. Maximum 1000 characters allowed.');
+    }
+    
+    if (message.length < 1) {
+        throw new Error('Message cannot be empty.');
+    }
+    
+    // Content validation - prevent XSS and injection
+    const blockedPatterns = [
+        /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+        /javascript:/gi,
+        /data:text\/html/gi,
+        /on\w+\s*=/gi,
+        /eval\s*\(/gi,
+        /exec\s*\(/gi
+    ];
+    
+    for (const pattern of blockedPatterns) {
+        if (pattern.test(message)) {
+            throw new Error('Invalid content detected. Please remove any script tags or JavaScript code.');
+        }
+    }
+    
+    return message;
+}
 
 function createAIAssistant() {
     // Create toggle button
@@ -24,8 +112,9 @@ function createAIAssistant() {
             <button onclick="toggleAIChat()" style="background: none; border: none; color: white; cursor: pointer;">✕</button>
         </div>
         <div class="ai-chat-messages" id="aiChatMessages"></div>
+        <div class="ai-chat-status" id="aiChatStatus" style="display: none; padding: 10px; background: #f8f9fa; border-top: 1px solid #dee2e6; font-size: 12px; color: #6c757d;"></div>
         <div class="ai-chat-input">
-            <input type="text" id="aiChatInput" placeholder="Ask about homelab setup..." onkeypress="handleAIChatKeyPress(event)">
+            <input type="text" id="aiChatInput" placeholder="Ask about homelab setup..." onkeypress="handleAIChatKeyPress(event)" maxlength="1000">
             <button onclick="sendAIMessage()" style="margin-left: 10px; padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Send</button>
         </div>
     `;
@@ -54,23 +143,138 @@ function handleAIChatKeyPress(event) {
     }
 }
 
-function sendAIMessage() {
+function showStatus(message, type = 'info') {
+    const statusElement = document.getElementById('aiChatStatus');
+    statusElement.style.display = 'block';
+    statusElement.className = `ai-chat-status ai-status-${type}`;
+    
+    const colors = {
+        'info': '#6c757d',
+        'error': '#dc3545',
+        'success': '#28a745',
+        'warning': '#ffc107'
+    };
+    
+    statusElement.style.color = colors[type] || colors['info'];
+    statusElement.textContent = message;
+    
+    if (type === 'info') {
+        setTimeout(() => {
+            statusElement.style.display = 'none';
+        }, 3000);
+    }
+}
+
+async function sendAIMessage() {
     const input = document.getElementById('aiChatInput');
     const message = input.value.trim();
     
     if (!message) return;
     
-    // Add user message
-    addMessage(message, 'user');
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        showStatus('Authentication required. Please login again.', 'error');
+        redirectToLogin();
+        return;
+    }
     
-    // Clear input
-    input.value = '';
+    try {
+        // Rate limiting
+        const userId = JSON.parse(atob(token.split('.')[1])).sub;
+        checkRateLimit(userId);
+        
+        // Input validation
+        const validatedMessage = validateAIInput(message);
+        
+        // Add user message
+        addMessage(validatedMessage, 'user');
+        
+        // Clear input and show typing indicator
+        input.value = '';
+        showStatus('🤔 Thinking...', 'info');
+        addTypingIndicator();
+        
+        // Make actual API call
+        const response = await fetch('/api/ai/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ 
+                message: validatedMessage,
+                context: getWindowContext()
+            })
+        });
+        
+        removeTypingIndicator();
+        
+        if (!response.ok) {
+            if (response.status === 429) {
+                throw new Error('Rate limit exceeded. Please wait before sending another message.');
+            } else if (response.status === 401) {
+                throw new Error('Authentication expired. Please login again.');
+            } else {
+                throw new Error(`API Error: ${response.status}`);
+            }
+        }
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        
+        // Add AI response
+        addMessage(data.response, 'assistant');
+        showStatus('✓ Response received', 'success');
+        
+    } catch (error) {
+        removeTypingIndicator();
+        showStatus(`❌ ${error.message}`, 'error');
+        console.error('AI Assistant Error:', error);
+        
+        // Add error message to chat
+        addMessage(`Error: ${error.message}`, 'system');
+    }
+}
+
+function getWindowContext() {
+    // Extract relevant context from the current page
+    const title = document.title;
+    const url = window.location.pathname;
+    const headings = Array.from(document.querySelectorAll('h1, h2, h3')).map(h => h.textContent).join('\n');
     
-    // Simulate AI response
-    setTimeout(() => {
-        const response = generateAIResponse(message);
-        addMessage(response, 'assistant');
-    }, 1000);
+    return {
+        page_title: title,
+        page_url: url,
+        headings: headings.substring(0, 500), // Limit context length
+        timestamp: new Date().toISOString()
+    };
+}
+
+function addTypingIndicator() {
+    const messagesContainer = document.getElementById('aiChatMessages');
+    const typingElement = document.createElement('div');
+    typingElement.className = 'ai-message assistant ai-typing';
+    typingElement.innerHTML = `
+        <strong>Assistant:</strong><br>
+        <span class="typing-dots">
+            <span class="dot">.</span>
+            <span class="dot">.</span>
+            <span class="dot">.</span>
+        </span>
+    `;
+    
+    messagesContainer.appendChild(typingElement);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function removeTypingIndicator() {
+    const typingElement = document.querySelector('.ai-typing');
+    if (typingElement) {
+        typingElement.remove();
+    }
 }
 
 function addMessage(message, sender) {

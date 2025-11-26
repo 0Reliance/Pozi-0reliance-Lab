@@ -105,7 +105,7 @@ markdown_extensions:
       custom_checkbox: true
   - pymdownx.tilde
 
-# Page Tree - Simplified to only include existing files
+# Page Tree - Complete navigation with all existing files
 nav:
   - Home: index.md
   - Homelab Projects:
@@ -113,13 +113,20 @@ nav:
     - Network Infrastructure:
       - homelab/network/index.md
       - Router Configuration: homelab/network/router.md
+      - Firewall Configuration: homelab/network/firewall.md
+      - Network Switches: homelab/network/switches.md
     - Storage Systems:
       - homelab/storage/index.md
       - NAS Setup: homelab/storage/nas-setup.md
     - Virtualization:
       - homelab/virtualization/index.md
+      - Docker Containers: homelab/virtualization/docker.md
+      - Kubernetes: homelab/virtualization/kubernetes.md
+      - KVM Virtualization: homelab/virtualization/kvm.md
     - Monitoring:
       - homelab/monitoring/index.md
+      - Grafana Dashboards: homelab/monitoring/grafana.md
+      - Prometheus Metrics: homelab/monitoring/prometheus.md
   - Coursework:
     - coursework/index.md
     - Computer Science:
@@ -134,6 +141,13 @@ nav:
       - Wireless Networks: coursework/networking/wireless.md
     - System Administration:
       - coursework/sysadmin/index.md
+      - Linux Administration: coursework/sysadmin/linux.md
+      - Windows Administration: coursework/sysadmin/windows.md
+      - Automation Scripts: coursework/sysadmin/automation.md
+  - Development:
+    - development/index.md
+    - Git Workflow: development/git-workflow.md
+    - Maintenance: development/maintenance.md
   - Guides:
     - guides/index.md
     - Getting Started: guides/getting-started.md

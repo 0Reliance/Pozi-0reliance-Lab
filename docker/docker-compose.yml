@@ -9,7 +9,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ..:/app
+      - ..:/app:ro
       - mkdocs_site:/app/site
     working_dir: /app
     command: >
@@ -20,7 +20,30 @@ services:
       "
     environment:
       - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
     restart: unless-stopped
+    # Security constraints
+    security_opt:
+      - no-new-privileges:true
+    read_only: false
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     networks:
       - homelab-docs-network
 
@@ -33,18 +56,48 @@ services:
     ports:
       - "8001:8000"
     volumes:
-      - ..:/app
+      - ..:/app:ro
       - ai_uploads:/app/uploads
-    working_dir: /app
+      - ai_backend_logs:/app/logs
+    working_dir: /app/ai-backend
+    command: >
+      sh -c "
+        python -m pip install -r requirements.txt &&
+        python main.py
+      "
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-in-production}
-      - DOCS_PATH=/app/docs
-      - ADMIN_PATH=/app/admin
-      - MKDOCS_CONFIG=/app/mkdocs.yml
+      - SECRET_KEY=${SECRET_KEY}
+      - REDIS_URL=redis://redis:6379/0
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:8000,http://localhost}
+      - PYTHONPATH=/app/ai-backend
+      - PYTHONUNBUFFERED=1
     restart: unless-stopped
     depends_on:
       - mkdocs
+      - redis
+    # Security constraints
+    security_opt:
+      - no-new-privileges:true
+    read_only: false
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     networks:
       - homelab-docs-network
 
@@ -117,6 +170,8 @@ volumes:
   mkdocs_site:
     driver: local
   ai_uploads:
+    driver: local
+  ai_backend_logs:
     driver: local
   redis_data:
     driver: local

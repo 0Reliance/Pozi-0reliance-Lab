@@ -1,4 +1,4 @@
-#!/home/pozilabadmin/homelab-docs/venv/bin/python3
+#!/home/pozilabadmin/PoziHomeLab/homelab-docs/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

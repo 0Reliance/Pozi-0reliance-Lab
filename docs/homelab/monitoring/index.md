@@ -329,7 +329,7 @@ receivers:
   - name: 'critical-alerts'
     email_configs:
       - to: 'admin@yourdomain.com'
-        subject: '[CRITICAL] {{ .GroupLabels.alertname }}'
+                subject: '[CRITICAL] {{ .GroupLabels.alertname }}'
         body: |
           {{ range .Alerts }}
           Alert: {{ .Annotations.summary }}
