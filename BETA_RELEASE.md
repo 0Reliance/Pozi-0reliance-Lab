@@ -139,16 +139,16 @@ The Homelab Documentation Hub is now ready for beta release! This comprehensive 
 ### ⚡ One-Command Setup
 ```bash
 # Clone and deploy
-git clone https://github.com/genpozi/homelab-docs.git
-cd homelab-docs
+git clone https://github.com/0Reliance/Pozi-0reliance-Lab.git
+cd Pozi-0reliance-Lab
 ./scripts/setup.sh
 ```
 
 ### 🔧 Manual Setup
 ```bash
 # Clone and configure
-git clone https://github.com/genpozi/homelab-docs.git
-cd homelab-docs
+git clone https://github.com/0Reliance/Pozi-0reliance-Lab.git
+cd Pozi-0reliance-Lab
 cp .env.example .env
 # Edit .env with your settings
 
@@ -236,8 +236,8 @@ curl http://localhost:8001/health
 ```
 
 ### 📧 Reporting Channels
-- **GitHub Issues**: [Create Issue](https://github.com/genpozi/homelab-docs/issues)
-- **Discussions**: [Start Discussion](https://github.com/genpozi/homelab-docs/discussions)
+- **GitHub Issues**: [Create Issue](https://github.com/0Reliance/Pozi-0reliance-Lab/issues)
+- **Discussions**: [Start Discussion](https://github.com/0Reliance/Pozi-0reliance-Lab/discussions)
 - **Email**: beta@homelab-docs.com
 
 ### 🏷️ Labels to Use
@@ -319,8 +319,8 @@ Special thanks to the open-source community for the tools and libraries that mak
 ### 🆘 Getting Help
 - **Documentation**: [Installation Guide](INSTALLATION.md)
 - **Quality Review**: [Quality Assessment](QUALITY_REVIEW.md)
-- **Issues**: [GitHub Issues](https://github.com/genpozi/homelab-docs/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/genpozi/homelab-docs/discussions)
+- **Issues**: [GitHub Issues](https://github.com/0Reliance/Pozi-0reliance-Lab/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/0Reliance/Pozi-0reliance-Lab/discussions)
 
 ### 📚 Resources
 - **Project README**: [README.md](README.md)

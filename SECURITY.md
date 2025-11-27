@@ -13,7 +13,7 @@ If you discover a security vulnerability in this project, please follow these st
 ### 1. Private Disclosure
 Please **do not** open a public issue. Instead, send an email to:
 - security@homelab-docs.com
-- or create a private [GitHub Security Advisory](https://github.com/genpozi/homelab-docs/security/advisories)
+- or create a private [GitHub Security Advisory](https://github.com/0Reliance/Pozi-0reliance-Lab/security/advisories)
 
 ### 2. What to Include
 Please include the following information in your report:
@@ -201,7 +201,7 @@ pip install --upgrade -r requirements.txt
 
 ### Security Team
 - **Security Lead**: security@homelab-docs.com
-- **GitHub Security**: [GitHub Security Advisory](https://github.com/genpozi/homelab-docs/security/advisories)
+- **GitHub Security**: [GitHub Security Advisory](https://github.com/0Reliance/Pozi-0reliance-Lab/security/advisories)
 - **Bug Bounty**: Contact security@homelab-docs.com for bug bounty program details
 
 ### Emergency Contact

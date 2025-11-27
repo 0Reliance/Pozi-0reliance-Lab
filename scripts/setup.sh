@@ -128,8 +128,8 @@ validate_environment() {
     
     # Validate secret key
     if [[ -n "${SECRET_KEY:-}" ]]; then
-        if [[ ${#SECRET_KEY} -lt 16 ]]; then
-            log_error "SECRET_KEY should be at least 16 characters long"
+        if [[ ${#SECRET_KEY} -lt 32 ]]; then
+            log_error "SECRET_KEY should be at least 32 characters long"
             errors=$((errors + 1))
         fi
     fi

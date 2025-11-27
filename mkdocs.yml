@@ -5,7 +5,7 @@ site_url: https://homelab-docs.local
 
 # Repository
 repo_name: homelab-docs
-repo_url: https://github.com/genpozi/homelab-docs
+repo_url: https://github.com/0Reliance/Pozi-0reliance-Lab
 edit_uri: edit/main/docs/
 
 # Theme Configuration
@@ -93,8 +93,8 @@ markdown_extensions:
   - pymdownx.magiclink:
       normalize_issue_symbols: true
       repo_url_shorthand: true
-      user: yourusername
-      repo: homelab-docs
+      user: 0Reliance
+      repo: Pozi-0reliance-Lab
   - pymdownx.mark
   - pymdownx.smartsymbols
   - pymdownx.snippets
@@ -179,7 +179,7 @@ extra:
     property: G-XXXXXXXXXX
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/yourusername
+      link: https://github.com/0Reliance
     - icon: fontawesome/brands/linkedin
       link: https://linkedin.com/in/yourprofile
     - icon: fontawesome/brands/twitter

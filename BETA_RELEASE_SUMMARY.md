@@ -105,7 +105,7 @@ The Homelab Documentation Hub has been comprehensively audited, optimized, and p
 ### Development Environment
 ```bash
 # Clone and setup
-git clone https://github.com/genpozi/homelab-docs.git
+git clone https://github.com/0Reliance/Pozi-0reliance-Lab.git
 cd homelab-docs
 python3 -m venv venv
 source venv/bin/activate

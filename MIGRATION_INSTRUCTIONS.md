@@ -7,7 +7,7 @@ This document provides the exact steps to migrate the Homelab Documentation Hub 
 ## 🎯 Target Repository
 
 **New Repository**: https://github.com/0Reliance/Pozi-0reliance-Lab  
-**Current Repository**: https://github.com/genpozi/homelab-docs.git  
+**Current Repository**: https://github.com/0Reliance/Pozi-0reliance-Lab.git  
 
 ## 📝 Migration Steps
 

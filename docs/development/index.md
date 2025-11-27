@@ -12,8 +12,8 @@ This section provides comprehensive guides for contributing to and maintaining t
 ### Development Environment
 ```bash
 # Clone the repository
-git clone https://github.com/genpozi/homelab-docs.git
-cd homelab-docs
+git clone https://github.com/0Reliance/Pozi-0reliance-Lab.git
+cd Pozi-0reliance-Lab
 
 # Set up Python virtual environment
 python3 -m venv venv

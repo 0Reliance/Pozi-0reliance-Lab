@@ -4,7 +4,7 @@
 
 🏠 **A comprehensive AI-powered platform for managing homelab documentation with intelligent content generation, advanced search, and collaborative features.**
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/your-org/homelab-docs/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/0Reliance/Pozi-0reliance-Lab/blob/main/LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-green.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Latest-red.svg)](https://fastapi.tiangolo.com/)
@@ -42,8 +42,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/homelab-docs.git
-cd homelab-docs
+git clone https://github.com/0Reliance/Pozi-0reliance-Lab.git
+cd Pozi-0reliance-Lab
 
 # Copy environment configuration
 cp .env.example .env
@@ -64,8 +64,8 @@ docker-compose -f docker/docker-compose.yml up --build -d
 
 ```bash
 # Clone and setup
-git clone https://github.com/your-org/homelab-docs.git
-cd homelab-docs
+git clone https://github.com/0Reliance/Pozi-0reliance-Lab.git
+cd Pozi-0reliance-Lab
 
 # Create virtual environment
 python3 -m venv venv
@@ -200,8 +200,8 @@ CUSTOM_API_KEY=your_key
 ### Quick Start
 ```bash
 # Clone and setup
-git clone https://github.com/your-org/homelab-docs.git
-cd homelab-docs
+git clone https://github.com/0Reliance/Pozi-0reliance-Lab.git
+cd Pozi-0reliance-Lab
 
 # Configure environment
 cp .env.example .env
@@ -430,10 +430,10 @@ docker stats
 We welcome contributions of all types! Please see our [Contributing Guidelines](docs/about/contributing.md) for details.
 
 ### How to Contribute
-1. **Report Issues**: Found a bug? [Report it here](https://github.com/your-org/homelab-docs/issues)
-2. **Submit Pull Requests**: Fixed a bug or added a feature? [Submit a PR](https://github.com/your-org/homelab-docs/pulls)
+1. **Report Issues**: Found a bug? [Report it here](https://github.com/0Reliance/Pozi-0reliance-Lab/issues)
+2. **Submit Pull Requests**: Fixed a bug or added a feature? [Submit a PR](https://github.com/0Reliance/Pozi-0reliance-Lab/pulls)
 3. **Improve Documentation**: Help us improve our documentation
-4. **Share Ideas**: Have an idea for a new feature? [Let us know](https://github.com/your-org/homelab-docs/discussions)
+4. **Share Ideas**: Have an idea for a new feature? [Let us know](https://github.com/0Reliance/Pozi-0reliance-Lab/discussions)
 
 ### Development Areas
 - 🤖 **AI Backend**: Python, FastAPI, OpenAI integration
@@ -458,8 +458,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Getting Help
 - 📖 [Documentation](https://homelab-docs.readthedocs.io/)
-- 🐛 [Issues](https://github.com/your-org/homelab-docs/issues)
-- 💬 [Discussions](https://github.com/your-org/homelab-docs/discussions)
+- 🐛 [Issues](https://github.com/0Reliance/Pozi-0reliance-Lab/issues)
+- 💬 [Discussions](https://github.com/0Reliance/Pozi-0reliance-Lab/discussions)
 - 📧 [Email](mailto:support@homelab-docs.com)
 
 ### Community

@@ -495,7 +495,7 @@ git submodule foreach git pull origin main
 
 ```bash
 # Use shallow clone for recent history
-git clone --depth 1 https://github.com/your-org/homelab-docs.git
+git clone --depth 1 https://github.com/0Reliance/Pozi-0reliance-Lab.git
 
 # Use sparse checkout for specific directories
 git sparse-checkout init --cone

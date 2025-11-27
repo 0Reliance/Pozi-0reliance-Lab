@@ -33,7 +33,7 @@ The Homelab Documentation Hub is a comprehensive platform for managing homelab d
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/genpozi/homelab-docs.git
+git clone https://github.com/0Reliance/Pozi-0reliance-Lab.git
 cd homelab-docs
 
 # 2. Run automated setup script
@@ -99,7 +99,7 @@ The automated setup script (`scripts/setup.sh`) performs comprehensive deploymen
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/genpozi/homelab-docs.git
+git clone https://github.com/0Reliance/Pozi-0reliance-Lab.git
 cd homelab-docs
 
 # 2. Copy environment configuration
@@ -158,8 +158,8 @@ docker-compose -f docker/docker-compose.yml logs -f
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-org/homelab-docs.git
-cd homelab-docs
+git clone https://github.com/0Reliance/Pozi-0reliance-Lab.git
+cd Pozi-0reliance-Lab
 
 # 2. Create virtual environment
 python3 -m venv venv
@@ -330,8 +330,8 @@ sudo apt-get install -y nodejs
 sudo apt install -y python3 python3-pip python3-venv
 
 # Clone and run
-git clone https://github.com/your-org/homelab-docs.git
-cd homelab-docs
+git clone https://github.com/0Reliance/Pozi-0reliance-Lab.git
+cd Pozi-0reliance-Lab
 docker-compose -f docker/docker-compose.yml up --build -d
 ```
 
@@ -348,8 +348,8 @@ brew install --cask docker
 brew install python3
 
 # Clone and run
-git clone https://github.com/your-org/homelab-docs.git
-cd homelab-docs
+git clone https://github.com/0Reliance/Pozi-0reliance-Lab.git
+cd Pozi-0reliance-Lab
 docker-compose -f docker/docker-compose.yml up --build -d
 ```
 
@@ -366,8 +366,8 @@ docker-compose -f docker/docker-compose.yml up --build -d
 # Download from https://www.python.org/downloads/windows/
 
 # Clone and run (using PowerShell or Git Bash)
-git clone https://github.com/your-org/homelab-docs.git
-cd homelab-docs
+git clone https://github.com/0Reliance/Pozi-0reliance-Lab.git
+cd Pozi-0reliance-Lab
 docker-compose -f docker/docker-compose.yml up --build -d
 ```
 
@@ -903,9 +903,9 @@ curl http://localhost:8001/api/health
 ### Getting Help
 
 1. **Documentation**: [https://homelab-docs.readthedocs.io/](https://homelab-docs.readthedocs.io/)
-2. **GitHub Issues**: [https://github.com/your-org/homelab-docs/issues](https://github.com/your-org/homelab-docs/issues)
-3. **Discussions**: [https://github.com/your-org/homelab-docs/discussions](https://github.com/your-org/homelab-docs/discussions)
-4. **Wiki**: [https://github.com/your-org/homelab-docs/wiki](https://github.com/your-org/homelab-docs/wiki)
+2. **GitHub Issues**: [https://github.com/0Reliance/Pozi-0reliance-Lab/issues](https://github.com/0Reliance/Pozi-0reliance-Lab/issues)
+3. **Discussions**: [https://github.com/0Reliance/Pozi-0reliance-Lab/discussions](https://github.com/0Reliance/Pozi-0reliance-Lab/discussions)
+4. **Wiki**: [https://github.com/0Reliance/Pozi-0reliance-Lab/wiki](https://github.com/0Reliance/Pozi-0reliance-Lab/wiki)
 
 ### Contributing
 
@@ -949,4 +949,24 @@ A: Yes, the AI backend can be configured to work with OpenAI-compatible APIs.
 **Q: How do I backup my data?**
 A: See the "Backup and Recovery" section for automated backup procedures.
 
----
+# Deployment Options
+
+You can deploy Homelab Documentation Hub using several methods:
+
+1. **Local Development**
+   - Run `mkdocs serve` and `python ai-backend/main.py` locally for development.
+2. **Docker Compose**
+   - Use `docker-compose -f docker/docker-compose.yml up --build -d` to run all services in containers.
+3. **Static Site Build (Production)**
+   - Use the `mkdocs-builder` service in Docker Compose to build static files:
+     ```bash
+     docker-compose --profile build up mkdocs-builder
+     ```
+   - Serve the `site/` directory with Nginx or GitHub Pages.
+4. **CI/CD Pipeline**
+   - Automated tests, builds, and deploys are handled via GitHub Actions (`.github/workflows/ci.yml` and `deploy.yml`).
+   - On push or release, the site is built and published to GitHub Pages.
+5. **GitHub Pages**
+   - The site is automatically deployed to https://0Reliance.github.io/Pozi-0reliance-Lab/ via CI.
+
+See `RELEASE.md` for the full release and deployment checklist.
