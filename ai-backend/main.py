@@ -19,8 +19,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.base import BaseHTTPMiddleware
 from pydantic import BaseModel, Field
 import uvicorn
-import redis
-import aioredis
+import redis.asyncio as aioredis
 import jwt
 from passlib.context import CryptContext
 import openai
