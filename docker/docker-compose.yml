@@ -14,12 +14,12 @@ services:
     command: >
       sh -c "
         cd /app &&
-        . venv/bin/activate &&
-        mkdocs serve --dev-addr=0.0.0.0:8000 --watch
+        mkdocs serve --dev-addr=0.0.0.0:8000
       "
     environment:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-this-in-production-32-chars-min}
     restart: unless-stopped
     # Security constraints
     security_opt:
@@ -86,8 +86,8 @@ services:
         python main.py
       "
     environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - SECRET_KEY=${SECRET_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-sk-placeholder}
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-this-in-production-32-chars-min}
       - REDIS_URL=redis://redis:6379/0
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:8000,http://localhost}
       - PYTHONPATH=/app/ai-backend

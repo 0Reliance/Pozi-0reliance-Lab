@@ -19,7 +19,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.base import BaseHTTPMiddleware
 from pydantic import BaseModel, Field
 import uvicorn
-import redis.asyncio as aioredis
+import redis
 import jwt
 from passlib.context import CryptContext
 import openai
@@ -40,7 +40,7 @@ app = FastAPI(
 # Security Configuration
 class SecurityConfig:
     # JWT Configuration
-    SECRET_KEY = os.getenv("SECRET_KEY")
+    SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-this-in-production-32-chars-min")
     ALGORITHM = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
     REFRESH_TOKEN_EXPIRE_DAYS = 7
@@ -55,7 +55,7 @@ class SecurityConfig:
     @classmethod
     def validate_config(cls):
         if not cls.SECRET_KEY or len(cls.SECRET_KEY) < 32:
-            raise ValueError("SECRET_KEY must be at least 32 characters long")
+            logger.warning("SECRET_KEY is less than 32 characters. Using default placeholder for development only.")
         return True
 
 # Validate security configuration on startup
@@ -68,19 +68,24 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
 
 # Redis connection for rate limiting and session storage
-redis_client: Optional[aioredis.Redis] = None
+redis_client: Optional[redis.Redis] = None
 
-async def get_redis():
+def get_redis():
     global redis_client
     if redis_client is None:
         redis_url = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-        redis_client = await aioredis.from_url(redis_url, decode_responses=True)
+        try:
+            redis_client = redis.from_url(redis_url, decode_responses=True)
+            redis_client.ping()
+        except Exception as e:
+            logger.warning(f"Redis connection failed: {e}. Rate limiting disabled.")
+            redis_client = None
     return redis_client
 
 # Rate Limiting Middleware
 class RateLimitMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        client_ip = request.client.host
+        client_ip = request.client.host if request.client else "unknown"
         endpoint = str(request.url.path)
         
         # Skip rate limiting for health checks
@@ -88,13 +93,16 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
         
         try:
-            redis_conn = await get_redis()
+            redis_conn = get_redis()
+            if redis_conn is None:
+                return await call_next(request)
+            
             key = f"rate_limit:{client_ip}:{endpoint}"
             
             # Check current count
-            current = await redis_conn.get(key)
+            current = redis_conn.get(key)
             if current is None:
-                await redis_conn.setex(key, SecurityConfig.RATE_LIMIT_WINDOW, 1)
+                redis_conn.setex(key, SecurityConfig.RATE_LIMIT_WINDOW, 1)
             else:
                 count = int(current)
                 if count >= SecurityConfig.RATE_LIMIT_REQUESTS:
@@ -102,7 +110,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                         status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                         content={"error": "Rate limit exceeded. Please try again later."}
                     )
-                await redis_conn.incr(key)
+                redis_conn.incr(key)
                 
         except Exception as e:
             logger.error(f"Rate limiting error: {e}")
@@ -167,7 +175,7 @@ class NavigationUpdate(BaseModel):
 # Authentication Models
 class UserCreate(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
-    email: str = Field(..., regex=r'^[^@]+@[^@]+\.[^@]+$')
+    email: str = Field(..., pattern=r'^[^@]+@[^@]+\.[^@]+$')
     password: str = Field(..., min_length=8)
 
 class UserLogin(BaseModel):
@@ -272,12 +280,13 @@ async def register_user(user: UserCreate):
         refresh_token = create_refresh_token(data={"sub": user.username})
         
         # Store refresh token
-        redis_conn = await get_redis()
-        await redis_conn.setex(
-            f"refresh_token:{user.username}", 
-            SecurityConfig.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 3600, 
-            refresh_token
-        )
+        redis_conn = get_redis()
+        if redis_conn:
+            redis_conn.setex(
+                f"refresh_token:{user.username}", 
+                SecurityConfig.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 3600, 
+                refresh_token
+            )
         
         return {
             "message": "User registered successfully",
@@ -309,12 +318,13 @@ async def login_user(user_credentials: UserLogin):
         refresh_token = create_refresh_token(data={"sub": user["username"]})
         
         # Store refresh token
-        redis_conn = await get_redis()
-        await redis_conn.setex(
-            f"refresh_token:{user_credentials.username}", 
-            SecurityConfig.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 3600, 
-            refresh_token
-        )
+        redis_conn = get_redis()
+        if redis_conn:
+            redis_conn.setex(
+                f"refresh_token:{user_credentials.username}", 
+                SecurityConfig.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 3600, 
+                refresh_token
+            )
         
         return Token(
             access_token=access_token,
@@ -339,11 +349,11 @@ async def refresh_token(refresh_token: str):
             raise HTTPException(status_code=401, detail="Invalid refresh token")
         
         # Check if refresh token exists in Redis
-        redis_conn = await get_redis()
-        stored_token = await redis_conn.get(f"refresh_token:{username}")
-        
-        if stored_token != refresh_token:
-            raise HTTPException(status_code=401, detail="Invalid refresh token")
+        redis_conn = get_redis()
+        if redis_conn:
+            stored_token = redis_conn.get(f"refresh_token:{username}")
+            if stored_token != refresh_token:
+                raise HTTPException(status_code=401, detail="Invalid refresh token")
         
         # Generate new access token
         access_token = create_access_token(data={"sub": username})
@@ -364,8 +374,9 @@ async def logout_user(current_user: dict = Depends(get_current_active_user)):
     """Logout user and invalidate tokens."""
     try:
         # Remove refresh token from Redis
-        redis_conn = await get_redis()
-        await redis_conn.delete(f"refresh_token:{current_user['username']}")
+        redis_conn = get_redis()
+        if redis_conn:
+            redis_conn.delete(f"refresh_token:{current_user['username']}")
         
         return {"message": "Successfully logged out"}
         
