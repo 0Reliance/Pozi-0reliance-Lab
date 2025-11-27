@@ -5,16 +5,19 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Create non-root user BEFORE copying files (better layer efficiency)
+RUN useradd -m -u 1000 mkdocs
+
 # Copy requirements first for better caching
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies with retries for stability
+RUN pip install --no-cache-dir --retries 3 -r requirements.txt
 
 # Install additional MkDocs plugins and themes
 RUN pip install --no-cache-dir \
@@ -31,9 +34,8 @@ RUN pip install --no-cache-dir \
 # Copy the entire project
 COPY . .
 
-# Create non-root user
-RUN useradd -m -u 1000 mkdocs && \
-    chown -R mkdocs:mkdocs /app
+# Fix permissions in separate step (non-blocking)
+RUN chown -R mkdocs:mkdocs /app
 
 USER mkdocs
 

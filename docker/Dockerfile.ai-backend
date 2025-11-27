@@ -5,24 +5,26 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
     git \
     && rm -rf /var/lib/apt/lists/*
 
+# Create non-root user BEFORE copying files (better layer efficiency)
+RUN useradd -m -u 1000 aiuser
+
 # Copy requirements first for better caching
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies with retries for stability
+RUN pip install --no-cache-dir --retries 3 -r requirements.txt
 
 # Copy AI backend application
 COPY ai-backend/ .
 
-# Create non-root user
-RUN useradd -m -u 1000 aiuser && \
-    chown -R aiuser:aiuser /app
+# Fix permissions in separate step (non-blocking)
+RUN chown -R aiuser:aiuser /app
 
 USER aiuser
 
