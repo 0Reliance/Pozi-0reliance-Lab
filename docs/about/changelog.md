@@ -10,6 +10,33 @@ All notable changes to the Homelab Documentation Hub project will be documented 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2025-12-01
+
+### Added
+- **Parallax Hero Section**
+  - Multi-layer parallax scrolling effect on homepage
+  - Animated stars and floating orb backgrounds
+  - Smooth fade-out on scroll with proper z-index layering
+  - Opacity-only animations to prevent content jumping
+
+### Changed
+- **Authentication Simplification**
+  - Documentation site is now publicly accessible without login
+  - AI Assistant features require authentication (JWT tokens)
+  - Login prompt appears inside chat container when user interacts
+  - Removed intrusive popup toasts on page load
+
+- **Docker Configuration Improvements**
+  - Fixed volume mount order to prevent read-only filesystem errors
+  - Added site directory creation in Dockerfile for volume mounts
+  - Removed `:ro` flag from app mounts to allow proper volume mounting
+
+### Fixed
+- Fixed hero content appearing behind parallax layers (z-index fix)
+- Fixed hero content jumping during page load (opacity-only animation)
+- Fixed hero section overlaying scrolled content (fade-out logic)
+- Fixed Docker container startup failures due to volume mount issues
+
 ## [Unreleased]
 
 ### Added
