@@ -1,11 +1,11 @@
 // AI Assistant functionality for Homelab Docs
 document.addEventListener('DOMContentLoaded', function() {
-    // Check authentication before creating AI Assistant
+    // Always create the AI Assistant UI - auth check happens when user interacts
+    createAIAssistant();
+    
+    // Only load conversation history if authenticated
     if (checkAuthentication()) {
-        createAIAssistant();
         loadConversationHistory();
-    } else {
-        showAuthenticationRequired();
     }
 });
 
@@ -33,24 +33,19 @@ function redirectToLogin() {
     window.location.href = '/admin/login';
 }
 
-function showAuthenticationRequired() {
-    const authMessage = document.createElement('div');
-    authMessage.className = 'ai-auth-required';
-    authMessage.innerHTML = `
-        <div style="position: fixed; bottom: 20px; right: 20px; background: #dc3545; color: white; padding: 15px; border-radius: 8px; max-width: 300px; z-index: 1000;">
-            <strong>🔒 Authentication Required</strong><br>
-            Please <a href="/admin/login" style="color: white; text-decoration: underline;">login</a> to use the AI Assistant.
-            <button onclick="this.parentElement.parentElement.remove()" style="margin-left: 10px; background: none; border: 1px solid white; color: white; padding: 2px 8px; cursor: pointer;">✕</button>
+// Show login prompt inside the AI chat container (not as popup toast)
+function showLoginPromptInChat() {
+    const messagesContainer = document.getElementById('aiChatMessages');
+    if (!messagesContainer) return;
+    
+    messagesContainer.innerHTML = `
+        <div style="padding: 20px; text-align: center;">
+            <div style="font-size: 48px; margin-bottom: 15px;">🔐</div>
+            <h3 style="margin: 0 0 10px 0; color: #333;">Login Required</h3>
+            <p style="color: #666; margin-bottom: 15px;">Please login to use the AI Assistant features.</p>
+            <a href="/admin/login" style="display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Login to Continue</a>
         </div>
     `;
-    document.body.appendChild(authMessage);
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        if (authMessage.parentElement) {
-            authMessage.remove();
-        }
-    }, 5000);
 }
 
 function checkRateLimit(userId) {
@@ -130,7 +125,13 @@ function toggleAIChat() {
     if (chatContainer.classList.contains('hidden')) {
         chatContainer.classList.remove('hidden');
         toggleButton.classList.add('hidden');
-        document.getElementById('aiChatInput').focus();
+        
+        // Check auth when opening chat - show login prompt if not authenticated
+        if (!checkAuthentication()) {
+            showLoginPromptInChat();
+        } else {
+            document.getElementById('aiChatInput').focus();
+        }
     } else {
         chatContainer.classList.add('hidden');
         toggleButton.classList.remove('hidden');
@@ -171,12 +172,13 @@ async function sendAIMessage() {
     
     if (!message) return;
     
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-        showStatus('Authentication required. Please login again.', 'error');
-        redirectToLogin();
+    // Check authentication before sending
+    if (!checkAuthentication()) {
+        showLoginPromptInChat();
         return;
     }
+    
+    const token = localStorage.getItem('access_token');
     
     try {
         // Rate limiting
