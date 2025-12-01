@@ -158,3 +158,41 @@ uploads/
 *.safetensors
 models/
 .cache/
+
+# Virtual Environments
+venv/
+venv_build/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Cline and AI tool artifacts
+cline/
+cline-cli/
+.cline/
+
+# Node.js artifacts (for documentation tools)
+node_modules/
+package-lock.json
+yarn.lock
+npm-debug.log
+
+# IDE and editor backups
+*.swp
+*.swo
+*~
+.DS_Store
+
+# VSCode remote containers
+.devcontainer/
+
+# Build artifacts and cache
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+__pycache__/
+

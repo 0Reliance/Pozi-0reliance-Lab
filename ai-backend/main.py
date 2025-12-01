@@ -411,6 +411,75 @@ async def root():
         }
     }
 
+# Admin login page
+LOGIN_HTML = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #1a1a2e; color: #eee; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .login-box { background: #16213e; padding: 2em; border-radius: 8px; box-shadow: 0 2px 8px #0006; width: 100%; max-width: 300px; }
+    h2 { text-align: center; margin: 0 0 1.5em 0; color: #fff; }
+    input { margin: 0.8em 0; padding: 0.7em; width: 100%; box-sizing: border-box; background: #0f3460; border: 1px solid #533483; color: #fff; border-radius: 4px; }
+    input::placeholder { color: #999; }
+    button { margin: 1em 0 0; padding: 0.8em; width: 100%; background: #533483; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    button:hover { background: #6b4aa3; }
+    .toast { background: #444; color: #fff; padding: 1em; border-radius: 4px; position: fixed; top: 1em; right: 1em; display: none; z-index: 9999; max-width: 300px; }
+    .error { color: #ff6b6b; }
+    .success { color: #51cf66; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Admin Login</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Username" required><br>
+      <input type="password" id="password" placeholder="Password" required><br>
+      <button type="submit">Login</button>
+    </form>
+    <div id="toast" class="toast"></div>
+  </div>
+  <script>
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast ' + (isError ? 'error' : 'success');
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+    document.getElementById('loginForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      try {
+        const res = await fetch('/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        if (res.ok && data.access_token) {
+          showToast('Login successful!', false);
+          localStorage.setItem('access_token', data.access_token);
+        } else {
+          showToast(data.detail || 'Login failed', true);
+        }
+      } catch (err) {
+        showToast('Network error: ' + err.message, true);
+      }
+    };
+  </script>
+</body>
+</html>"""
+
+@app.get("/admin/login", tags=["Admin"])
+def get_login_page():
+    """Serve the admin login page as HTML"""
+    from fastapi.responses import HTMLResponse
+    return HTMLResponse(content=LOGIN_HTML)
+
 # Content generation endpoints
 @app.post("/api/generate", response_model=ContentResponse, tags=["Content Generation"])
 async def generate_content(request: ContentRequest, current_user: dict = Depends(get_current_active_user)):

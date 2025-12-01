@@ -1,6 +1,17 @@
 // Homelab Documentation Custom JavaScript
 
+// Detect if we're on the homepage
+function isHomepage() {
+  const path = window.location.pathname;
+  return path === '/' || path === '/index.html' || path.endsWith('/index.html');
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Add homepage class for CSS selectors
+    if (isHomepage()) {
+      document.body.classList.add('is-home');
+    }
+    
     // Initialize all interactive components
     initializeScrollProgress();
     initializeBackToTop();
@@ -58,16 +69,32 @@ function initializeHeroSection() {
     if (!heroParallax) return;
 
     let ticking = false;
+    const parallaxLayers = heroParallax.querySelectorAll('.parallax-layer');
+    const isHome = document.body.classList.contains('is-home');
 
     function updateParallax() {
         const scrolled = window.pageYOffset;
-        const parallaxElements = heroParallax.querySelectorAll('.hero-content, .hero-title, .hero-subtitle');
         
-        parallaxElements.forEach((element, index) => {
-            const speed = 0.5 + (index * 0.1);
+        // For fixed hero (homepage), only apply parallax when hero is visible
+        if (isHome && scrolled > window.innerHeight) {
+          ticking = false;
+          return;
+        }
+        
+        // Update parallax layers with different speeds
+        parallaxLayers.forEach((layer) => {
+            const speed = parseFloat(layer.getAttribute('data-speed')) || 0.5;
             const yPos = -(scrolled * speed);
-            element.style.transform = `translateY(${yPos}px)`;
+            layer.style.transform = `translateY(${yPos}px)`;
         });
+        
+        // Update hero content with parallax effect
+        const heroContent = heroParallax.querySelector('.hero-content');
+        if (heroContent) {
+            const heroSpeed = 0.4;
+            const yPos = -(scrolled * heroSpeed);
+            heroContent.style.transform = `translateY(${yPos}px)`;
+        }
 
         ticking = false;
     }
@@ -79,7 +106,7 @@ function initializeHeroSection() {
         }
     }
 
-    window.addEventListener('scroll', requestTick);
+    window.addEventListener('scroll', requestTick, { passive: true });
 
     // Initialize hero content animations
     animateHeroContent();
@@ -129,7 +156,7 @@ function initializeStatsAnimation() {
 }
 
 function animateNumber(element) {
-    const finalValue = parseInt(element.textContent);
+    const finalValue = parseInt(element.getAttribute('data-target')) || parseInt(element.textContent);
     const duration = 2000; // 2 seconds
     const steps = 60;
     const stepValue = finalValue / steps;

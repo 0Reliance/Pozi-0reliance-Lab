@@ -9,6 +9,17 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+/* HOMEPAGE ONLY: Full-screen immersive hero */
+body.is-home .hero-parallax {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  overflow: visible;
+}
+
 /* Multiple parallax layers for depth */
 .parallax-layer {
   position: absolute;
@@ -23,49 +34,55 @@
   transition: transform 0.1s ease-out;
 }
 
-/* Cloud layer - dream.png */
-.parallax-cloud {
-  background-image: url('../images/dream.png');
+/* HOMEPAGE ONLY: Adjust layer height for fixed positioning */
+body.is-home .parallax-layer {
+  height: 100%;
+  background-attachment: fixed;
+}
+
+/* Background layer - slowest scroll speed */
+.parallax-back {
   background-size: cover;
   background-position: center;
-  opacity: 0.8;
+  opacity: 0.6;
   z-index: 1;
-  filter: blur(2px);
-  animation: drift 20s infinite ease-in-out;
 }
 
-/* Tech pattern layer */
+/* Tech pattern layer - slow scroll speed */
 .parallax-tech {
-  background-image: url('../images/tech-pattern.svg');
-  opacity: 0.3;
-  z-index: 2;
-  animation: move 30s infinite linear;
-}
-
-/* Hero image layer */
-.parallax-hero {
-  background-image: url('../images/lhnvupvps4h91.png');
-  background-size: contain;
+  background-size: 400px;
   background-position: center;
-  background-repeat: no-repeat;
-  z-index: 3;
-  opacity: 0;
-  transition: opacity 1.2s ease-in-out;
+  opacity: 0.2;
+  z-index: 2;
+  background-attachment: fixed;
 }
 
-.parallax-hero.active {
-  opacity: 1;
+/* Midground layer - medium scroll speed */
+.parallax-mid {
+  background-size: contain;
+  background-position: center bottom;
+  opacity: 0.4;
+  z-index: 3;
 }
 
 /* Hero content container */
 .hero-content {
   position: relative;
-  z-index: 4;
+  z-index: 10;
   text-align: center;
   color: white;
   max-width: 800px;
   padding: 2rem;
   animation: fadeInUp 1s ease-out;
+}
+
+/* HOMEPAGE ONLY: Content positioning for full-screen hero */
+body.is-home .hero-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
 }
 
 /* Hero text with enhanced visibility */
@@ -125,6 +142,13 @@
   padding: 4rem 2rem;
   background: var(--md-primary-fg-color);
   color: white;
+}
+
+/* HOMEPAGE ONLY: Push stats below full-screen hero */
+body.is-home .stats-section {
+  position: relative;
+  z-index: 10;
+  margin-top: 0;
 }
 
 .stats-grid {

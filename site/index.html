@@ -2259,9 +2259,16 @@
 
 <!-- Hero Section with Multi-Layer Parallax -->
 <div class="hero-parallax">
-  <div class="parallax-layer parallax-back"></div>
-  <div class="parallax-layer parallax-mid"></div>
-  <div class="parallax-layer parallax-front"></div>
+  <!-- Background layer - slowest movement -->
+  <div class="parallax-layer parallax-back" data-speed="0.3" style="background-image: url('../images/parallax/hero-bg.svg');"></div>
+
+  <!-- Tech pattern layer - slow movement -->
+  <div class="parallax-layer parallax-tech" data-speed="0.5" style="background-image: url('../images/parallax/tech-pattern.svg');"></div>
+
+  <!-- Midground layer - medium movement -->
+  <div class="parallax-layer parallax-mid" data-speed="0.7" style="background-image: url('../images/parallax/midground.svg');"></div>
+
+  <!-- Hero content overlay -->
   <div class="hero-content">
     <h1 class="hero-title">Homelab Documentation Hub</h1>
     <p class="hero-subtitle">Empowering your technical journey with AI-powered documentation</p>
