@@ -34,6 +34,9 @@ RUN pip install --no-cache-dir \
 # Copy the entire project
 COPY . .
 
+# Create site directory (for volume mount)
+RUN mkdir -p /app/site
+
 # Fix permissions in separate step (non-blocking)
 RUN chown -R mkdocs:mkdocs /app
 
