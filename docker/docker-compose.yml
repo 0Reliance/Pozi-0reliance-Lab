@@ -8,8 +8,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ..:/app:ro
       - mkdocs_site:/app/site
+      - ..:/app
     working_dir: /app
     command: >
       sh -c "
@@ -54,10 +54,10 @@ services:
     container_name: homelab-docs-mkdocs-builder
     working_dir: /app
     command: >
-      sh -c "cd /app && . venv/bin/activate && mkdocs build"
+      sh -c "cd /app && mkdocs build"
     volumes:
-      - ..:/app:ro
       - mkdocs_site:/app/site
+      - ..:/app
     environment:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
@@ -76,9 +76,9 @@ services:
     ports:
       - "8001:8000"
     volumes:
-      - ..:/app:ro
       - ai_uploads:/app/uploads
       - ai_backend_logs:/app/logs
+      - ..:/app
     working_dir: /app/ai-backend
     command: >
       sh -c "
