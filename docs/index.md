@@ -6,13 +6,13 @@ description: Your comprehensive resource for homelab projects and technical docu
 <!-- Hero Section with Multi-Layer Parallax -->
 <div class="hero-parallax">
   <!-- Background layer - slowest movement -->
-  <div class="parallax-layer parallax-back" data-speed="0.3" style="background-image: url('../images/parallax/hero-bg.svg');"></div>
+  <div class="parallax-layer parallax-back" data-speed="0.3" style="background-image: url('images/parallax/hero-bg.svg');"></div>
   
   <!-- Tech pattern layer - slow movement -->
-  <div class="parallax-layer parallax-tech" data-speed="0.5" style="background-image: url('../images/parallax/tech-pattern.svg');"></div>
+  <div class="parallax-layer parallax-tech" data-speed="0.5" style="background-image: url('images/parallax/tech-pattern.svg');"></div>
   
   <!-- Midground layer - medium movement -->
-  <div class="parallax-layer parallax-mid" data-speed="0.7" style="background-image: url('../images/parallax/midground.svg');"></div>
+  <div class="parallax-layer parallax-mid" data-speed="0.7" style="background-image: url('images/parallax/midground.svg');"></div>
   
   <!-- Hero content overlay -->
   <div class="hero-content">

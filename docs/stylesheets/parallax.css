@@ -18,6 +18,14 @@ body.is-home .hero-parallax {
   height: 100vh;
   z-index: 1;
   overflow: visible;
+  transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+}
+
+/* Hide hero when scrolled past - controlled by JS */
+body.is-home .hero-parallax.hero-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 /* Multiple parallax layers for depth */
@@ -45,7 +53,7 @@ body.is-home .parallax-layer {
   background-size: cover;
   background-position: center;
   opacity: 0.6;
-  z-index: 1;
+  z-index: -3;
 }
 
 /* Tech pattern layer - slow scroll speed */
@@ -53,7 +61,7 @@ body.is-home .parallax-layer {
   background-size: 400px;
   background-position: center;
   opacity: 0.2;
-  z-index: 2;
+  z-index: -2;
   background-attachment: fixed;
 }
 
@@ -62,7 +70,7 @@ body.is-home .parallax-layer {
   background-size: contain;
   background-position: center bottom;
   opacity: 0.4;
-  z-index: 3;
+  z-index: -1;
 }
 
 /* Hero content container */
@@ -73,7 +81,7 @@ body.is-home .parallax-layer {
   color: white;
   max-width: 800px;
   padding: 2rem;
-  animation: fadeInUp 1s ease-out;
+  width: 100%;
 }
 
 /* HOMEPAGE ONLY: Content positioning for full-screen hero */
@@ -82,7 +90,20 @@ body.is-home .hero-content {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 100;
+  z-index: 2;
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+  pointer-events: auto;
+  transition: opacity 0.3s ease-out;
+  /* Use opacity-only animation to avoid transform conflicts */
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Opacity-only fade animation for homepage (no transform to avoid centering conflicts) */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Hero text with enhanced visibility */
@@ -91,19 +112,40 @@ body.is-home .hero-content {
   font-weight: 700;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-  animation: fadeInUp 1s ease-out;
   background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.8));
   -webkit-background-clip: text;
   -webkit-text-fill-color: white;
   padding: 0.5rem 1rem;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Non-homepage: use full animation */
+body:not(.is-home) .hero-title {
+  animation: fadeInUp 1s ease-out;
+}
+
+/* Homepage: use opacity-only animation */
+body.is-home .hero-title {
+  animation: fadeIn 0.8s ease-out 0.2s both;
 }
 
 .hero-subtitle {
   font-size: 1.5rem;
   margin-bottom: 2rem;
+}
+
+/* Non-homepage: use full animation with transform */
+body:not(.is-home) .hero-subtitle {
   opacity: 0;
   animation: fadeInUp 1s ease-out 0.2s both;
   transform: translateY(10px);
+}
+
+/* Homepage: use opacity-only animation (no transform conflicts) */
+body.is-home .hero-subtitle {
+  animation: fadeIn 0.8s ease-out 0.4s both;
 }
 
 /* Enhanced hero buttons */
@@ -113,7 +155,16 @@ body.is-home .hero-content {
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 3rem;
+}
+
+/* Non-homepage: use full animation */
+body:not(.is-home) .hero-buttons {
   animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+/* Homepage: use opacity-only animation */
+body.is-home .hero-buttons {
+  animation: fadeIn 0.8s ease-out 0.6s both;
 }
 
 .hero-button {
@@ -144,11 +195,20 @@ body.is-home .hero-content {
   color: white;
 }
 
-/* HOMEPAGE ONLY: Push stats below full-screen hero */
+/* HOMEPAGE ONLY: Position stats to start below hero and overlay on scroll */
 body.is-home .stats-section {
   position: relative;
-  z-index: 10;
-  margin-top: 0;
+  z-index: 5;
+  margin-top: 100vh;
+  padding-top: 4rem;
+  background: transparent;
+}
+
+body.is-home .stats-grid {
+  background: var(--md-primary-fg-color);
+  padding: 4rem 2rem;
+  margin-left: -2rem;
+  margin-right: -2rem;
 }
 
 .stats-grid {

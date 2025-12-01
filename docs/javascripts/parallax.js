@@ -42,11 +42,19 @@ class ParallaxController {
    * Setup parallax speeds for each layer
    */
   setupSpeeds() {
-    this.speeds.set(
-      document.querySelector('.parallax-cloud'), 0.2,
-      document.querySelector('.parallax-tech'), 0.1,
-      document.querySelector('.parallax-hero'), 0.5
-    );
+    // Set speeds for actual parallax layers that exist in the HTML
+    this.layers.forEach((layer, index) => {
+      if (layer.classList.contains('parallax-back')) {
+        this.speeds.set(layer, 0.3);
+      } else if (layer.classList.contains('parallax-tech')) {
+        this.speeds.set(layer, 0.5);
+      } else if (layer.classList.contains('parallax-mid')) {
+        this.speeds.set(layer, 0.7);
+      } else {
+        // Default speed for any other layers
+        this.speeds.set(layer, 0.5);
+      }
+    });
   }
 
   /**

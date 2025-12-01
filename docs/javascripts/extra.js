@@ -70,15 +70,44 @@ function initializeHeroSection() {
 
     let ticking = false;
     const parallaxLayers = heroParallax.querySelectorAll('.parallax-layer');
+    const heroContent = heroParallax.querySelector('.hero-content');
     const isHome = document.body.classList.contains('is-home');
 
     function updateParallax() {
         const scrolled = window.pageYOffset;
+        const viewportHeight = window.innerHeight;
         
-        // For fixed hero (homepage), only apply parallax when hero is visible
-        if (isHome && scrolled > window.innerHeight) {
-          ticking = false;
-          return;
+        // For homepage: hide hero completely when scrolled past first viewport
+        if (isHome) {
+          // Calculate opacity based on scroll position (fade out as we approach 100vh)
+          const fadeStart = viewportHeight * 0.5; // Start fading at 50% scroll
+          const fadeEnd = viewportHeight * 0.9;   // Fully hidden at 90% scroll
+          
+          if (scrolled >= fadeEnd) {
+            // Fully scrolled past - hide hero completely
+            heroParallax.classList.add('hero-hidden');
+            if (heroContent) {
+              heroContent.style.opacity = '0';
+              heroContent.style.pointerEvents = 'none';
+            }
+            ticking = false;
+            return;
+          } else if (scrolled > fadeStart) {
+            // Fading out
+            heroParallax.classList.remove('hero-hidden');
+            const opacity = 1 - ((scrolled - fadeStart) / (fadeEnd - fadeStart));
+            if (heroContent) {
+              heroContent.style.opacity = opacity.toString();
+              heroContent.style.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
+            }
+          } else {
+            // Fully visible
+            heroParallax.classList.remove('hero-hidden');
+            if (heroContent) {
+              heroContent.style.opacity = '1';
+              heroContent.style.pointerEvents = 'auto';
+            }
+          }
         }
         
         // Update parallax layers with different speeds
@@ -88,12 +117,13 @@ function initializeHeroSection() {
             layer.style.transform = `translateY(${yPos}px)`;
         });
         
-        // Update hero content with parallax effect
-        const heroContent = heroParallax.querySelector('.hero-content');
-        if (heroContent) {
+        // Update hero content with parallax effect on non-homepage pages only
+        // On homepage, the hero is fixed and should stay centered
+        if (heroContent && !isHome) {
             const heroSpeed = 0.4;
             const yPos = -(scrolled * heroSpeed);
-            heroContent.style.transform = `translateY(${yPos}px)`;
+            // Combine horizontal centering with vertical parallax movement
+            heroContent.style.transform = `translate(-50%, calc(-50% + ${yPos}px))`;
         }
 
         ticking = false;

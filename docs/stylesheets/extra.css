@@ -555,4 +555,5 @@ body.is-home .md-header {
 body.is-home .md-main {
     position: relative;
     z-index: 10;
+    background: var(--md-default-bg-color);
 }
